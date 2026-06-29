@@ -5,242 +5,259 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0D0D2B;--sb:#090920;--panel:rgba(255,255,255,.05);
-  --brd:rgba(255,255,255,.08);--t0:#FFFFFF;--t1:rgba(255,255,255,.7);
-  --t2:rgba(255,255,255,.4);--a:#F59E0B;
-  --g1:linear-gradient(135deg,#1565C0 0%,#0D47A1 60%,#1A237E 100%);
-  --g2:linear-gradient(135deg,#00838F 0%,#006064 60%,#004D40 100%);
-  --g3:linear-gradient(135deg,#C2185B 0%,#880E4F 60%,#4A148C 100%);
-  --font:-apple-system,'Segoe UI',system-ui,sans-serif;
-  --mono:'SF Mono','Consolas',monospace;
+  --bg:#F4F6FA;--white:#FFFFFF;--brd:#E4E8F0;
+  --t0:#1B2A4A;--t1:#4A5568;--t2:#9AA5B4;
+  --acc:#1B3A8C;--font:-apple-system,'Segoe UI',system-ui,sans-serif;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 8px rgba(0,0,0,.04);
+  --sh2:0 2px 12px rgba(0,0,0,.08);
 }
-html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--font);font-size:14px}
-.app{display:flex;height:100vh;overflow:hidden}
+html,body{min-height:100%;background:var(--bg);color:var(--t0);font-family:var(--font);font-size:14px}
 
-/* Sidebar */
-.sb{width:54px;flex-shrink:0;background:var(--sb);border-right:1px solid var(--brd);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px}
-.sb-logo{width:32px;height:32px;background:var(--a);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%);margin-bottom:16px;flex-shrink:0}
-.si{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--t2);transition:all .15s}
-.si:hover{background:rgba(255,255,255,.08);color:var(--t0)}
-.si.act{background:rgba(245,158,11,.15);color:var(--a)}
+/* ─── APP SHELL ──────────────────────────────────────────── */
+.app-shell{display:flex;min-height:100vh}
+.main-col{flex:1;min-width:0;display:flex;flex-direction:column}
 
-/* Main */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+/* ─── SIDEBAR ────────────────────────────────────────────── */
+.sidebar{width:210px;flex-shrink:0;background:linear-gradient(175deg,#1B3A8C 0%,#2448B0 40%,#3358C4 100%);display:flex;flex-direction:column;padding:24px 14px;gap:12px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-title{color:rgba(255,255,255,.9);font-size:13.5px;font-weight:700;text-align:center;letter-spacing:.2px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:2px}
+.sb-card{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px 14px 12px;display:flex;align-items:center;gap:12px;transition:background .15s;cursor:default}
+.sb-card:hover{background:rgba(255,255,255,.2)}
+.sb-icon{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sb-info{min-width:0}
+.sb-val{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.5px;font-variant-numeric:tabular-nums;line-height:1.1;white-space:nowrap}
+.sb-lbl{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px;line-height:1.3}
+.sb-divider{height:1px;background:rgba(255,255,255,.1);margin:2px 0}
 
-/* Header */
-.hdr{padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--brd);flex-shrink:0;background:rgba(255,255,255,.02)}
-.hdr-left{display:flex;align-items:center;gap:14px}
-.hdr-ico{width:28px;height:28px;background:var(--a);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)}
-.hdr-title{font-size:18px;font-weight:700;letter-spacing:-.3px}
+/* ─── HEADER ─────────────────────────────────────────────── */
+.hdr{background:var(--white);border-bottom:1px solid var(--brd);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.hdr-left .h1{font-size:22px;font-weight:700;color:var(--t0);letter-spacing:-.4px}
+.hdr-left .h2{font-size:12px;color:var(--t2);margin-top:1px}
 .hdr-right{display:flex;align-items:center;gap:10px}
-.fdd{display:flex;flex-direction:column;gap:2px}
-.fdd label{font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.7px}
-.fdd select{height:28px;padding:0 24px 0 8px;border-radius:6px;background:rgba(255,255,255,.08);border:1px solid var(--brd);color:var(--t0);font-size:12px;font-family:var(--font);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,.4)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:calc(100% - 7px) center;min-width:110px;transition:border-color .15s}
-.fdd select:focus{border-color:rgba(245,158,11,.6)}
-.fdd select option{background:#1a1a3e;color:#fff}
-.hdr-brand{text-align:right;line-height:1.2}
-.hdr-brand .b1{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--t0)}
-.hdr-brand .b2{font-size:10px;color:var(--t2);letter-spacing:.5px}
-.btn-clr{height:28px;padding:0 12px;border-radius:6px;border:1px solid var(--brd);background:transparent;color:var(--t1);font-size:11.5px;font-family:var(--font);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s}
-.btn-clr:hover{border-color:rgba(245,158,11,.5);color:var(--a)}
-.fcnt{width:22px;height:22px;border-radius:50%;background:var(--a);color:#000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.hdr-date{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t1);background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:6px 12px}
+.hdr-date svg{opacity:.5}
+.btn-share{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;background:var(--acc);color:#fff;font-size:12.5px;font-weight:600;border:none;cursor:pointer;font-family:var(--font)}
+.btn-share:hover{background:#1530a0}
 
-/* Content */
-.content{flex:1;overflow-y:auto;padding:18px 24px;display:flex;flex-direction:column;gap:14px}
+/* ─── FILTER BAR ─────────────────────────────────────────── */
+.fbar{background:var(--white);border-bottom:1px solid var(--brd);padding:10px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fsearch{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:0 12px;height:34px;min-width:170px}
+.fsearch input{border:none;background:transparent;outline:none;font-size:13px;color:var(--t0);font-family:var(--font);width:130px}
+.fsearch input::placeholder{color:var(--t2)}
+.fdrop{display:flex;flex-direction:column;gap:1px}
+.fdrop label{font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px}
+.fdrop select{height:34px;padding:0 28px 0 10px;border-radius:8px;background:var(--white);border:1px solid var(--brd);color:var(--t0);font-size:13px;font-family:var(--font);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239AA5B4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:calc(100% - 8px) center;min-width:120px;transition:border-color .15s;box-shadow:var(--sh)}
+.fdrop select:focus{border-color:var(--acc)}
+.fdrop select option{background:#fff;color:#1B2A4A}
+.btn-clr{display:flex;align-items:center;gap:5px;height:34px;padding:0 14px;border-radius:8px;border:1px solid var(--brd);background:var(--white);color:var(--t1);font-size:12.5px;font-family:var(--font);cursor:pointer;box-shadow:var(--sh);transition:all .15s;white-space:nowrap}
+.btn-clr:hover{border-color:var(--acc);color:var(--acc)}
+.fcnt-badge{min-width:24px;height:24px;border-radius:6px;background:var(--acc);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.factive{display:flex;align-items:center;gap:6px;padding:4px 12px 0;font-size:12px;color:var(--t2);cursor:pointer;user-select:none}
+.factive svg{opacity:.5}
 
-/* KPI Cards row */
-.krow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.kcard{border-radius:12px;padding:20px 22px 0;display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:190px}
-.kcard.blue{background:var(--g1)}
-.kcard.teal{background:var(--g2)}
-.kcard.pink{background:var(--g3)}
-.kc-label{font-size:13px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.2px}
-.kc-val{font-size:36px;font-weight:800;color:#fff;letter-spacing:-1px;margin-top:8px;font-variant-numeric:tabular-nums;font-family:var(--mono)}
-.kc-ico{position:absolute;right:16px;top:14px;font-size:52px;opacity:.18;user-select:none;line-height:1}
-.kc-sub{margin-top:8px;font-size:11.5px;color:rgba(255,255,255,.6)}
-.kc-sub strong{color:rgba(255,255,255,.9);font-weight:600}
-.kc-spark{margin-top:auto;height:60px;width:100%}
+/* ─── CONTENT ────────────────────────────────────────────── */
+.content{padding:20px 28px;display:flex;flex-direction:column;gap:18px}
 
-/* Bottom grid */
-.bgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;min-height:0}
+/* ─── KPI ROW ────────────────────────────────────────────── */
+.krow{display:grid;grid-template-columns:repeat(8,1fr);gap:12px}
+.kcard{background:var(--white);border:1px solid var(--brd);border-radius:12px;padding:16px 16px 0;display:flex;flex-direction:column;box-shadow:var(--sh);overflow:hidden;min-width:0}
+.kc-icon{font-size:20px;margin-bottom:6px;opacity:.7}
+.kc-val{font-size:28px;font-weight:800;color:var(--t0);letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+.kc-label{font-size:11.5px;font-weight:600;color:var(--t0);margin-top:4px}
+.kc-sub{font-size:10.5px;color:var(--t2);margin-top:1px}
+.kc-spark{margin-top:auto;height:44px;width:100%}
+
+/* ─── BOTTOM GRID ────────────────────────────────────────── */
+.bgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .bgrid.has-emp{grid-template-columns:1fr 1fr 1fr 1fr}
+.panel{background:var(--white);border:1px solid var(--brd);border-radius:12px;box-shadow:var(--sh);display:flex;flex-direction:column;overflow:hidden}
+.ph{padding:16px 20px 12px;border-bottom:1px solid var(--brd)}
+.ph h3{font-size:14px;font-weight:700;color:var(--t0)}
+.ph p{font-size:11.5px;color:var(--t2);margin-top:2px}
+.pb{flex:1;overflow:auto}
+.pfoot{padding:12px 20px;border-top:1px solid var(--brd);text-align:center}
+.pfoot a{font-size:12px;color:var(--acc);font-weight:600;text-decoration:none;cursor:pointer}
+.pfoot a:hover{text-decoration:underline}
 
-/* Panel */
-.panel{background:var(--panel);border:1px solid var(--brd);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
-.ph{padding:14px 18px 10px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.ph h3{font-size:13.5px;font-weight:600;color:var(--t0)}
-.ph p{font-size:11px;color:var(--t2)}
-.pb{flex:1;overflow:auto;padding:10px 0}
+/* ─── VENDEDOR LIST ──────────────────────────────────────── */
+.vlist{padding:6px 0}
+.vrow{display:flex;align-items:center;gap:10px;padding:8px 20px;transition:background .1s;cursor:pointer}
+.vrow:hover{background:var(--bg)}
+.vav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.vname{flex:1;font-size:12.5px;font-weight:600;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.vbar-track{width:110px;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;flex-shrink:0}
+.vbar-fill{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.34,1.56,.64,1)}
+.vcount{min-width:16px;font-size:12.5px;font-weight:700;color:var(--t0);text-align:right;font-variant-numeric:tabular-nums}
 
-/* Vendor table */
-.vtable{width:100%;border-collapse:collapse}
-.vtable thead th{padding:7px 16px;text-align:left;font-size:10.5px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--brd)}
-.vtable thead th:not(:first-child){text-align:right}
-.vtable tbody tr{border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .1s}
-.vtable tbody tr:hover{background:rgba(255,255,255,.04)}
-.vtable tbody tr.total-row{border-top:1px solid rgba(255,255,255,.15);font-weight:700}
-.vtable td{padding:8px 16px;font-size:12.5px;vertical-align:middle}
-.vtable td:not(:first-child){text-align:right}
-.vbar-wrap{display:flex;align-items:center;justify-content:flex-end;gap:8px}
-.vbar-track{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;flex-shrink:0}
-.vbar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
-.pct-badge{display:inline-flex;align-items:center;justify-content:center;min-width:36px;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700}
+/* ─── DONUT PANEL ────────────────────────────────────────── */
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:24px;padding:16px 20px}
+.donut-leg-list{display:flex;flex-direction:column;gap:7px;min-width:0}
+.dl-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t1)}
+.dl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dl-lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-cnt{font-weight:700;color:var(--t0);font-variant-numeric:tabular-nums}
 
-/* Grouped bar chart panel */
-.chart-area{flex:1;padding:12px 16px}
+/* ─── SKU BARS ───────────────────────────────────────────── */
+.skulist{padding:6px 0}
+.skurow{display:flex;align-items:center;gap:8px;padding:6px 20px}
+.skulabel{width:90px;font-size:12px;color:var(--t0);font-weight:500;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skutrack{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.skufill{height:100%;border-radius:3px;background:#1B3A8C;transition:width .5s cubic-bezier(.34,1.56,.64,1)}
+.skuval{min-width:18px;font-size:12px;font-weight:700;color:var(--t0);text-align:right;font-variant-numeric:tabular-nums}
 
-/* Empresas card */
-.emp-list{display:flex;flex-direction:column;gap:4px;padding:8px 0}
-.emp-item{display:flex;align-items:center;gap:10px;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.04)}
-.emp-item:last-child{border-bottom:none}
-.emp-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff}
+/* ─── EMPRESAS ───────────────────────────────────────────── */
+.emplist{padding:4px 0}
+.emprow{display:flex;align-items:center;gap:10px;padding:7px 16px;border-bottom:1px solid var(--brd)}
+.emprow:last-child{border-bottom:none}
+.emp-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
 .emp-info{flex:1;min-width:0}
-.emp-name{font-size:12px;font-weight:500;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.emp-name{font-size:11.5px;font-weight:600;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .emp-city{font-size:10.5px;color:var(--t2)}
-.emp-seg{font-size:10px;padding:2px 7px;border-radius:4px;white-space:nowrap;font-weight:600}
+.emp-seg{font-size:10px;padding:2px 7px;border-radius:4px;white-space:nowrap;font-weight:600;flex-shrink:0}
 
-/* Insights strip */
+/* ─── INSIGHTS STRIP ─────────────────────────────────────── */
 .insights{display:flex;gap:10px;flex-wrap:wrap}
-.insight{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--brd);flex:1;min-width:200px}
-.ins-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.ins-txt{font-size:12px;color:var(--t1);line-height:1.5}
+.insight{flex:1;min-width:180px;display:flex;align-items:flex-start;gap:9px;padding:10px 14px;background:var(--white);border:1px solid var(--brd);border-radius:10px;box-shadow:var(--sh)}
+.ins-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ins-txt{font-size:12px;color:var(--t1);line-height:1.55}
 .ins-txt strong{color:var(--t0);font-weight:600}
 
-/* Loading */
-#loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .4s}
+/* ─── LOADING ────────────────────────────────────────────── */
+#loading{position:fixed;inset:0;background:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .3s}
 #loading.out{opacity:0;pointer-events:none}
-.ring{width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,.08);border-top-color:var(--a);animation:spin .7s linear infinite}
+.ring{width:36px;height:36px;border-radius:50%;border:3px solid var(--brd);border-top-color:var(--acc);animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-size:12.5px;color:var(--t2)}
 
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.au{animation:fadeUp .35s ease both}
-@media(max-width:900px){.krow{grid-template-columns:1fr}.bgrid{grid-template-columns:1fr}}
+::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
+@media(max-width:1100px){.krow{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:700px){.krow{grid-template-columns:repeat(2,1fr)}.bgrid{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-@media print{.sb,#loading{display:none!important}.main{overflow:visible}.content{overflow:visible}}
 </style>
 
 <div id="loading"><div class="ring"></div><span class="load-txt">Carregando dashboard…</span></div>
 
-<div class="app" id="app" style="display:none">
+<div id="app" style="display:none">
+<div class="app-shell">
 
-<!-- Sidebar icons -->
-<div class="sb">
-  <div class="sb-logo"></div>
-  <div class="si act">⊞</div>
-  <div class="si">📋</div>
-  <div class="si">👤</div>
-  <div class="si">📦</div>
-  <div class="si">📊</div>
-</div>
-
-<!-- Main -->
-<div class="main">
-
-  <!-- Header -->
-  <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-ico"></div>
-      <span class="hdr-title">Análise de Solicitações de Orçamento</span>
-    </div>
-    <div class="hdr-right">
-      <div class="fdd"><label>Vendedor</label><select id="fvend" onchange="applyFilters()"><option value="">All</option></select></div>
-      <div class="fdd"><label>Estado</label><select id="fest" onchange="applyFilters()"><option value="">All</option></select></div>
-      <div class="fdd"><label>Segmento</label><select id="fseg" onchange="applyFilters()"><option value="">All</option></select></div>
-      <button class="btn-clr" onclick="clearFilters()">✕ Limpar</button>
-      <span class="fcnt" id="fcnt">8</span>
-      <div class="hdr-brand"><div class="b1">CHAMFER</div><div class="b2">DASHBOARD 2026</div></div>
-    </div>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-title">Principais Indicadores</div>
+  <div class="sb-card">
+    <div class="sb-icon">📋</div>
+    <div class="sb-info"><div class="sb-val" id="sb0">0</div><div class="sb-lbl">Total de Solicitações</div></div>
   </div>
-
-  <!-- Content -->
-  <div class="content">
-
-    <!-- KPI Cards -->
-    <div class="krow">
-      <div class="kcard blue au" style="animation-delay:0ms">
-        <div class="kc-label">Total de Solicitações</div>
-        <div class="kc-val" id="kv0">0</div>
-        <div class="kc-ico">📋</div>
-        <div class="kc-sub">Melhor dia: <strong id="ks0">—</strong></div>
-        <div class="kc-spark"><canvas id="sp0" height="60" style="width:100%;display:block"></canvas></div>
-      </div>
-      <div class="kcard teal au" style="animation-delay:80ms">
-        <div class="kc-label">Embalagens Distintas (SKUs)</div>
-        <div class="kc-val" id="kv1">0</div>
-        <div class="kc-ico">📦</div>
-        <div class="kc-sub">Mais solicitada: <strong id="ks1">—</strong></div>
-        <div class="kc-spark"><canvas id="sp1" height="60" style="width:100%;display:block"></canvas></div>
-      </div>
-      <div class="kcard pink au" style="animation-delay:160ms">
-        <div class="kc-label">% Embalagem Lisa</div>
-        <div class="kc-val" id="kv2">0%</div>
-        <div class="kc-ico">%</div>
-        <div class="kc-sub">Líder em pedidos: <strong id="ks2">—</strong></div>
-        <div class="kc-spark"><canvas id="sp2" height="60" style="width:100%;display:block"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Insights strip -->
-    <div class="insights au" id="insights" style="animation-delay:220ms"></div>
-
-    <!-- Bottom panels -->
-    <div class="bgrid" id="bgrid">
-
-      <!-- Vendedor table -->
-      <div class="panel au" style="animation-delay:240ms">
-        <div class="ph">
-          <div><h3>Solicitações por Vendedor</h3><p>Leads por responsável</p></div>
-        </div>
-        <div class="pb">
-          <table class="vtable">
-            <thead><tr>
-              <th>Vendedor</th>
-              <th>Solicitações</th>
-              <th>Embalagens</th>
-              <th>% Total</th>
-            </tr></thead>
-            <tbody id="vtbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Segmento donut -->
-      <div class="panel au" style="animation-delay:300ms">
-        <div class="ph">
-          <div><h3>Segmentos de Atuação</h3><p>Distribuição por setor</p></div>
-        </div>
-        <div class="chart-area" style="display:flex;align-items:center;justify-content:center">
-          <canvas id="cdonut" style="display:block"></canvas>
-        </div>
-      </div>
-
-      <!-- Estado horizontal bars -->
-      <div class="panel au" style="animation-delay:360ms">
-        <div class="ph">
-          <div><h3>Solicitações por Estado</h3><p>Distribuição geográfica</p></div>
-        </div>
-        <div class="chart-area"><canvas id="chbar" style="width:100%;display:block"></canvas></div>
-      </div>
-
-      <!-- Empresas do vendedor (conditional) -->
-      <div class="panel au" id="emp-panel" style="animation-delay:420ms;display:none">
-        <div class="ph">
-          <div><h3 id="emp-panel-title">Empresas do Vendedor</h3><p>Clientes atribuídos</p></div>
-        </div>
-        <div class="pb" id="emp-panel-body"></div>
-      </div>
-
-    </div>
+  <div class="sb-card">
+    <div class="sb-icon">🏢</div>
+    <div class="sb-info"><div class="sb-val" id="sb1">0</div><div class="sb-lbl">Novas Empresas</div></div>
+  </div>
+  <div class="sb-divider"></div>
+  <div class="sb-card">
+    <div class="sb-icon">👤</div>
+    <div class="sb-info"><div class="sb-val" id="sb2">0</div><div class="sb-lbl">Vendedores Ativos</div></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-icon">📍</div>
+    <div class="sb-info"><div class="sb-val" id="sb3">0</div><div class="sb-lbl">Cidades Alcançadas</div></div>
+  </div>
+  <div class="sb-divider"></div>
+  <div class="sb-card">
+    <div class="sb-icon">📦</div>
+    <div class="sb-info"><div class="sb-val" id="sb4">0</div><div class="sb-lbl">SKUs Distintos</div></div>
+  </div>
+  <div class="sb-card">
+    <div class="sb-icon">✅</div>
+    <div class="sb-info"><div class="sb-val" id="sb5">0%</div><div class="sb-lbl">% Embalagem Lisa</div></div>
   </div>
 </div>
+
+<!-- MAIN -->
+<div class="main-col">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="h1">Dashboard</div>
+    <div class="h2">Solicitações de Orçamento 2026</div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-date">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="2" stroke="#1B2A4A" stroke-width="1.2"/><path d="M1 5h12M4 1v2M10 1v2" stroke="#1B2A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Atualizado em <strong id="hdr-date-val">26/06/2026</strong>
+    </div>
+    <button class="btn-share">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="11" cy="2.5" r="1.8" stroke="white" stroke-width="1.2"/><circle cx="11" cy="11.5" r="1.8" stroke="white" stroke-width="1.2"/><circle cx="3" cy="7" r="1.8" stroke="white" stroke-width="1.2"/><path d="M4.7 6.1l4.6-2.8M4.7 7.9l4.6 2.8" stroke="white" stroke-width="1.2"/></svg>
+      Compartilhar
+    </button>
+  </div>
 </div>
+
+<!-- FILTER BAR -->
+<div class="fbar">
+  <div class="fsearch">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#9AA5B4" stroke-width="1.3"/><path d="M9.5 9.5L13 13" stroke="#9AA5B4" stroke-width="1.3" stroke-linecap="round"/></svg>
+    <input type="text" id="fsearch" placeholder="Buscar global..." oninput="applyFilters()">
+  </div>
+  <div class="fdrop"><label>Vendedor</label><select id="fvend" onchange="applyFilters()"><option value="">Todos</option></select></div>
+  <div class="fdrop"><label>Estado</label><select id="fest" onchange="applyFilters()"><option value="">Todos</option></select></div>
+  <div class="fdrop"><label>Cidade</label><select id="fcid" onchange="applyFilters()"><option value="">Todas</option></select></div>
+  <div class="fdrop"><label>Segmento</label><select id="fseg" onchange="applyFilters()"><option value="">Todos</option></select></div>
+  <div class="fdrop"><label>Decoração</label><select id="fdec" onchange="applyFilters()"><option value="">Todas</option></select></div>
+  <button class="btn-clr" onclick="clearFilters()">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Limpar filtros
+  </button>
+  <div class="fcnt-badge" id="fcnt">8</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- Insights -->
+  <div class="insights" id="insights"></div>
+
+  <!-- Bottom grid -->
+  <div class="bgrid" id="bgrid">
+
+    <!-- Vendedor list -->
+    <div class="panel">
+      <div class="ph"><h3>Solicitações por Vendedor</h3><p>Distribuição de leads por responsável</p></div>
+      <div class="pb"><div class="vlist" id="vlist"></div></div>
+      <div class="pfoot"><a onclick="">Ver todos</a></div>
+    </div>
+
+    <!-- Donut -->
+    <div class="panel">
+      <div class="ph"><h3>Segmento de Atuação</h3><p>Perfil setorial dos solicitantes</p></div>
+      <div class="pb donut-wrap">
+        <canvas id="cdonut" style="flex-shrink:0"></canvas>
+        <div class="donut-leg-list" id="dleg"></div>
+      </div>
+      <div class="pfoot"><a onclick="">Ver detalhes</a></div>
+    </div>
+
+    <!-- SKU bars -->
+    <div class="panel">
+      <div class="ph"><h3>Embalagens Mais Solicitadas</h3><p>Frequência de cada SKU nos pedidos</p></div>
+      <div class="pb"><div class="skulist" id="skulist"></div></div>
+      <div class="pfoot"><a onclick="">Ver todos</a></div>
+    </div>
+
+    <!-- Empresas (conditional) -->
+    <div class="panel" id="emp-panel" style="display:none">
+      <div class="ph"><h3 id="emp-title">Empresas do Vendedor</h3><p>Clientes atribuídos</p></div>
+      <div class="pb"><div class="emplist" id="emplist"></div></div>
+    </div>
+
+  </div>
+
+</div><!-- /main-col -->
+</div><!-- /app-shell -->
+</div><!-- /app -->
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────
+// ── DATA ────────────────────────────────────────────────────
 const RAW=[
   {idx:1,ts:'2026-06-24',nome:'Maurício Murari',empresa:'LUMA MARKET COMERCIO LTDA',cnpj:'53.396.995/0001-18',segmento:'Outros',estado:'Rio de Janeiro - RJ',cidade:'Cabo Frio',embalagens:'P500D',vendedor:'RODRIGO MOURA',decoracao:'In Mold Label'},
   {idx:2,ts:'2026-06-26',nome:'Renato Marandola',empresa:'SX 050 EMPREENDIMENTOS E PARTICIPACOES S.A.',cnpj:'59.909.792/0001-64',segmento:'Outros',estado:'São Paulo - SP',cidade:'São Paulo',embalagens:'Pote Sorvete 2L',vendedor:'SIMONE DIAS',decoracao:'Lisa'},
@@ -254,14 +271,9 @@ const RAW=[
 
 let F=[...RAW];
 const VCOLS=['#3B82F6','#10B981','#F59E0B','#8B5CF6','#EF4444','#14B8A6','#F97316','#EC4899'];
-const SPARK_DATA=[
-  [1,1,2,3,3,4,5,6,7,8],
-  [2,3,4,5,6,7,8,8,9,9],
-  [70,72,75,78,80,83,85,87,88,88]
-];
 
-// ── FILTERS ──────────────────────────────────────────────────
-function fillSel(id,key){
+// ── FILTERS ────────────────────────────────────────────────
+function fillSel(id,key,label='Todos'){
   const el=document.getElementById(id);
   const first=el.options[0];el.innerHTML='';el.appendChild(first);
   [...new Set(RAW.map(d=>d[key]))].sort().forEach(v=>{
@@ -271,298 +283,246 @@ function fillSel(id,key){
 function applyFilters(){
   const vend=document.getElementById('fvend').value;
   const est=document.getElementById('fest').value;
+  const cid=document.getElementById('fcid').value;
   const seg=document.getElementById('fseg').value;
+  const dec=document.getElementById('fdec').value;
+  const q=document.getElementById('fsearch').value.toLowerCase().trim();
   F=RAW.filter(d=>{
     if(vend&&d.vendedor!==vend)return false;
     if(est&&d.estado!==est)return false;
+    if(cid&&d.cidade!==cid)return false;
     if(seg&&d.segmento!==seg)return false;
+    if(dec&&d.decoracao!==dec)return false;
+    if(q&&![d.nome,d.empresa,d.vendedor,d.cidade,d.segmento,d.embalagens].join(' ').toLowerCase().includes(q))return false;
     return true;
   });
   document.getElementById('fcnt').textContent=F.length;
   renderAll();
 }
 function clearFilters(){
-  ['fvend','fest','fseg'].forEach(id=>document.getElementById(id).value='');
+  ['fvend','fest','fcid','fseg','fdec'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fsearch').value='';
   applyFilters();
 }
 
-// ── ANIMATE NUMBER ────────────────────────────────────────────
+// ── ANIMATE NUMBER ──────────────────────────────────────────
 function animN(el,target,suffix='',dur=500){
+  const start=parseInt(el.textContent)||0;
   let t0=null;
   (function step(ts){
     if(!t0)t0=ts;
     const p=Math.min((ts-t0)/dur,1);
-    el.textContent=Math.round((1-Math.pow(1-p,3))*target)+suffix;
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(start+(target-start)*ease)+suffix;
     if(p<1)requestAnimationFrame(step);
   })(performance.now());
 }
 
-// ── SPARKLINE ─────────────────────────────────────────────────
-function drawSpark(id,data,color){
-  const c=document.getElementById(id);if(!c)return;
+// ── SPARKLINE ──────────────────────────────────────────────
+function drawSpark(canvas,data,color){
   const dpr=window.devicePixelRatio||1;
-  const w=c.parentElement.clientWidth||300;
-  const h=60;
-  c.width=w*dpr;c.height=h*dpr;
-  c.style.width=w+'px';c.style.height=h+'px';
-  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const w=canvas.parentElement.clientWidth||120;
+  const h=44;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  canvas.style.width=w+'px';canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
   const min=Math.min(...data),max=Math.max(...data),rng=max-min||1;
-  const pts=data.map((v,i)=>({x:i/(data.length-1)*w,y:h-6-(v-min)/rng*(h-14)}));
-  // fill
+  const pts=data.map((v,i)=>({x:i/(data.length-1)*w,y:h-4-(v-min)/rng*(h-10)}));
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,color+'22');g.addColorStop(1,color+'00');
   ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
   pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
   ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
-  const g=ctx.createLinearGradient(0,0,0,h);
-  g.addColorStop(0,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(255,255,255,.02)');
   ctx.fillStyle=g;ctx.fill();
-  // line
   ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
   pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
-  ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
-  // dot
+  ctx.strokeStyle=color;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();
   const last=pts[pts.length-1];
-  ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);
-  ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath();ctx.arc(last.x,last.y,3,0,Math.PI*2);
+  ctx.fillStyle=color;ctx.fill();
 }
 
-// ── KPIs ─────────────────────────────────────────────────────
+// ── KPI CARDS ──────────────────────────────────────────────
+const KPI_DEFS=[
+  {id:'k0',icon:'📋',label:'Total de Solicitações',sub:'registros no período',color:'#3B82F6',
+    val:()=>F.length,subTxt:()=>'registros no período',spark:()=>[1,1,2,3,3,4,5,6,7,F.length]},
+  {id:'k1',icon:'🏢',label:'Novas Empresas',sub:'100% novos clientes',color:'#10B981',
+    val:()=>new Set(F.map(d=>d.cnpj)).size,subTxt:()=>'100% novos clientes',spark:()=>[1,2,3,4,5,6,7,8,8,new Set(F.map(d=>d.cnpj)).size]},
+  {id:'k2',icon:'👤',label:'Vendedores Ativos',sub:'de 6 cadastrados',color:'#8B5CF6',
+    val:()=>new Set(F.map(d=>d.vendedor)).size,subTxt:()=>'de 6 cadastrados',spark:()=>[2,3,4,4,5,5,6,6,6,new Set(F.map(d=>d.vendedor)).size]},
+  {id:'k3',icon:'📍',label:'Cidades Alcançadas',sub:()=>`em ${new Set(F.map(d=>d.estado.split(' - ')[1]||d.estado)).size} estado(s)`,color:'#F59E0B',
+    val:()=>new Set(F.map(d=>d.cidade)).size,spark:()=>[1,2,3,4,5,5,6,6,6,new Set(F.map(d=>d.cidade)).size]},
+  {id:'k4',icon:'📦',label:'SKUs Distintos',sub:()=>{const a=F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()));return `${a.length} itens totais`},color:'#F97316',
+    val:()=>new Set(F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()))).size,spark:()=>[3,4,6,7,8,9,9,9,9,new Set(F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()))).size]},
+  {id:'k5',icon:'🏭',label:'Segmentos',sub:'setores atendidos',color:'#14B8A6',
+    val:()=>new Set(F.map(d=>d.segmento)).size,spark:()=>[1,2,2,3,3,4,4,4,4,new Set(F.map(d=>d.segmento)).size]},
+  {id:'k6',icon:'✅',label:'Embalagem Lisa',sub:()=>`${F.filter(r=>r.decoracao==='Lisa').length} de ${F.length} pedidos`,color:'#10B981',
+    val:()=>F.length?Math.round(F.filter(r=>r.decoracao==='Lisa').length/F.length*100):0,suffix:'%',spark:()=>[70,72,75,78,80,83,85,87,88,F.length?Math.round(F.filter(r=>r.decoracao==='Lisa').length/F.length*100):88]},
+  {id:'k7',icon:'🎯',label:'Concentração SP',sub:()=>`${F.filter(d=>d.estado.includes('SP')).length} de ${F.length} pedidos`,color:'#EF4444',
+    val:()=>F.length?Math.round(F.filter(d=>d.estado.includes('SP')).length/F.length*100):0,suffix:'%',spark:()=>[60,63,65,68,70,72,73,74,75,F.length?Math.round(F.filter(d=>d.estado.includes('SP')).length/F.length*100):75]},
+];
+
 function renderKPIs(){
-  const allEmb=F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()));
-  const embMap={};allEmb.forEach(e=>{embMap[e]=(embMap[e]||0)+1;});
-  const topEmb=Object.entries(embMap).sort((a,b)=>b[1]-a[1])[0];
-  const vendMap={};F.forEach(d=>{vendMap[d.vendedor]=(vendMap[d.vendedor]||0)+1;});
-  const topVend=Object.entries(vendMap).sort((a,b)=>b[1]-a[1])[0];
-  const lisaPct=F.length?Math.round(F.filter(r=>r.decoracao==='Lisa').length/F.length*100):0;
-
-  animN(document.getElementById('kv0'),F.length,'');
-  document.getElementById('ks0').textContent=`26/06 · ${F.filter(r=>r.ts==='2026-06-26').length} pedidos`;
-
-  animN(document.getElementById('kv1'),new Set(allEmb).size,'');
-  document.getElementById('ks1').textContent=topEmb?`${topEmb[0]} (${topEmb[1]}×)`:'—';
-
-  const kv2=document.getElementById('kv2');
-  kv2.textContent='0%';
-  animN(kv2,lisaPct,'%');
-  document.getElementById('ks2').textContent=topVend?`${topVend[0]}`:'—';
-
-  setTimeout(()=>{ drawSpark('sp0',SPARK_DATA[0],'#fff'); drawSpark('sp1',SPARK_DATA[1],'#fff'); drawSpark('sp2',SPARK_DATA[2],'#fff'); },200);
+  const row=document.getElementById('krow');
+  if(!row.children.length){
+    row.innerHTML=KPI_DEFS.map(k=>`
+      <div class="kcard">
+        <div class="kc-icon">${k.icon}</div>
+        <div class="kc-val" id="${k.id}-val">0${k.suffix||''}</div>
+        <div class="kc-label">${k.label}</div>
+        <div class="kc-sub" id="${k.id}-sub"></div>
+        <div class="kc-spark"><canvas id="${k.id}-sp" style="width:100%;display:block"></canvas></div>
+      </div>`).join('');
+  }
+  KPI_DEFS.forEach(k=>{
+    const valEl=document.getElementById(`${k.id}-val`);
+    const subEl=document.getElementById(`${k.id}-sub`);
+    animN(valEl,k.val(),k.suffix||'');
+    subEl.textContent=typeof k.subTxt==='function'?k.subTxt():k.sub;
+    setTimeout(()=>drawSpark(document.getElementById(`${k.id}-sp`),k.spark(),k.color),150);
+  });
 }
 
-// ── VENDOR TABLE ──────────────────────────────────────────────
-function renderVendorTable(){
-  const map={};const embMap={};
-  F.forEach(d=>{
-    map[d.vendedor]=(map[d.vendedor]||0)+1;
-    const cnt=d.embalagens.split(',').length;
-    embMap[d.vendedor]=(embMap[d.vendedor]||0)+cnt;
-  });
+// ── VENDEDOR LIST ──────────────────────────────────────────
+function renderVendorList(){
+  const map={};F.forEach(d=>{map[d.vendedor]=(map[d.vendedor]||0)+1;});
   const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]);
-  const total=sorted.reduce((s,[,v])=>s+v,0);
   const max=sorted[0]?.[1]||1;
-  const tb=document.getElementById('vtbody');
-  tb.innerHTML=sorted.map(([name,cnt],i)=>{
-    const pct=total?Math.round(cnt/total*100):0;
+  document.getElementById('vlist').innerHTML=sorted.map(([name,cnt],i)=>{
     const bw=Math.round(cnt/max*100);
     const col=VCOLS[i%VCOLS.length];
-    return `<tr>
-      <td style="color:var(--t0);font-weight:500">${name}</td>
-      <td>
-        <div class="vbar-wrap">
-          <div class="vbar-track"><div class="vbar-fill" style="width:${bw}%;background:${col}"></div></div>
-          <span style="color:var(--t0);font-weight:700;font-variant-numeric:tabular-nums;min-width:14px">${cnt}</span>
-        </div>
-      </td>
-      <td style="color:var(--t1)">${embMap[name]||0}</td>
-      <td><span class="pct-badge" style="background:${col}22;color:${col}">${pct}%</span></td>
-    </tr>`;
+    const initials=name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    return `<div class="vrow">
+      <div class="vav" style="background:${col}">${initials}</div>
+      <div class="vname">${name}</div>
+      <div class="vbar-track"><div class="vbar-fill" style="width:${bw}%;background:${col}"></div></div>
+      <div class="vcount">${cnt}</div>
+    </div>`;
   }).join('');
-
-  // Total row
-  const totalEmb=Object.values(embMap).reduce((a,b)=>a+b,0);
-  tb.innerHTML+=`<tr class="total-row">
-    <td style="color:var(--t0)">Total</td>
-    <td style="text-align:right;color:var(--t0);font-weight:700">${total}</td>
-    <td style="text-align:right;color:var(--t0)">${totalEmb}</td>
-    <td style="text-align:right"><span class="pct-badge" style="background:rgba(245,158,11,.15);color:var(--a)">100%</span></td>
-  </tr>`;
 }
 
-// ── DONUT (Segmentos) ─────────────────────────────────────────
+// ── DONUT ──────────────────────────────────────────────────
 function renderDonut(){
-  const c=document.getElementById('cdonut');if(!c)return;
-  const dpr=window.devicePixelRatio||1;
-  const container=c.parentElement;
-  const side=Math.min(container.clientWidth,container.clientHeight,220);
-  c.width=side*dpr;c.height=side*dpr;
-  c.style.width=side+'px';c.style.height=side+'px';
-  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,side,side);
-
   const map={};F.forEach(d=>{map[d.segmento]=(map[d.segmento]||0)+1;});
   const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Sem dados',side/2,side/2);return;}
   const total=entries.reduce((s,[,v])=>s+v,0);
-  const cx=side/2,cy=side/2,R=side/2-12,ri=R*.55;
+  const c=document.getElementById('cdonut');
+  const dpr=window.devicePixelRatio||1;
+  const side=130;
+  c.width=side*dpr;c.height=side*dpr;c.style.width=side+'px';c.style.height=side+'px';
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,side,side);
+  const cx=side/2,cy=side/2,R=side/2-4,ri=R*.6;
   let angle=-Math.PI/2;
-  entries.forEach(([seg,cnt],i)=>{
+  entries.forEach(([,cnt],i)=>{
     const sweep=cnt/total*Math.PI*2;
-    const col=VCOLS[i%VCOLS.length];
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,angle,angle+sweep);ctx.closePath();
-    ctx.fillStyle=col;ctx.fill();
-    // label line for big slices
-    if(cnt/total>0.1){
-      const mid=angle+sweep/2;
-      const lx=cx+Math.cos(mid)*(R*.75);const ly=cy+Math.sin(mid)*(R*.75);
-      ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(cnt,lx,ly);
-    }
+    ctx.fillStyle=VCOLS[i%VCOLS.length];ctx.fill();
     angle+=sweep;
   });
-  // hole
-  ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);ctx.fillStyle='#0D0D2B';ctx.fill();
-  // center text
-  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(total,cx,cy-7);
-  ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='10px sans-serif';
-  ctx.fillText('total',cx,cy+9);
+  ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  ctx.fillStyle='#1B2A4A';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(total,cx,cy-6);
+  ctx.fillStyle='#9AA5B4';ctx.font='11px sans-serif';ctx.fillText('total',cx,cy+10);
 
-  // legend below (use DOM — rendered outside canvas)
-  let leg=c.parentElement.querySelector('.donut-leg');
-  if(!leg){leg=document.createElement('div');leg.className='donut-leg';leg.style.cssText='display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;margin-top:10px;max-width:'+side+'px';c.parentElement.appendChild(leg);}
-  leg.innerHTML=entries.map(([seg,cnt],i)=>{
-    const short=seg.length>18?seg.slice(0,18)+'…':seg;
-    return `<span style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:rgba(255,255,255,.6)"><span style="width:8px;height:8px;border-radius:2px;background:${VCOLS[i%VCOLS.length]};flex-shrink:0"></span>${short}</span>`;
+  document.getElementById('dleg').innerHTML=entries.map(([seg,cnt],i)=>{
+    const short=seg.length>22?seg.slice(0,22)+'…':seg;
+    const pct=Math.round(cnt/total*100);
+    return `<div class="dl-item"><span class="dl-dot" style="background:${VCOLS[i%VCOLS.length]}"></span><span class="dl-lbl">${short}</span><span class="dl-cnt">${cnt} (${pct}%)</span></div>`;
   }).join('');
 }
 
-// ── HORIZONTAL BAR CHART (Estados) ───────────────────────────
-function renderHBar(){
-  const c=document.getElementById('chbar');if(!c)return;
-  const dpr=window.devicePixelRatio||1;
-  const container=c.parentElement;
-  const w=container.clientWidth-24;
-
-  const map={};F.forEach(d=>{const e=d.estado.split(' - ')[0];map[e]=(map[e]||0)+1;});
-  const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){c.height=60*dpr;c.style.height='60px';const ctx=c.getContext('2d');ctx.scale(dpr,dpr);ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Sem dados',w/2,30);return;}
-
-  const ROW_H=36,lpad=90,rpad=50,tpad=8,bpad=8;
-  const h=tpad+entries.length*ROW_H+bpad;
-  c.width=w*dpr;c.height=h*dpr;
-  c.style.width=w+'px';c.style.height=h+'px';
-  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,w,h);
-
-  const maxVal=entries[0][1];
-  const bw=w-lpad-rpad;
-
-  entries.forEach(([est,cnt],i)=>{
-    const y=tpad+i*ROW_H;
-    const col=VCOLS[i%VCOLS.length];
-    const barLen=cnt/maxVal*bw;
-
-    // label
-    ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='11.5px sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillText(est,lpad-8,y+ROW_H/2);
-
-    // track
-    ctx.fillStyle='rgba(255,255,255,.07)';
-    const r=5;
-    ctx.beginPath();ctx.moveTo(lpad,y+ROW_H/2-r);ctx.lineTo(lpad+bw,y+ROW_H/2-r);ctx.quadraticCurveTo(lpad+bw+r,y+ROW_H/2-r,lpad+bw+r,y+ROW_H/2);ctx.quadraticCurveTo(lpad+bw+r,y+ROW_H/2+r,lpad+bw,y+ROW_H/2+r);ctx.lineTo(lpad,y+ROW_H/2+r);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2+r,lpad-r,y+ROW_H/2);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2-r,lpad,y+ROW_H/2-r);ctx.closePath();
-    ctx.fill();
-
-    // bar
-    if(barLen>0){
-      const grad=ctx.createLinearGradient(lpad,0,lpad+barLen,0);
-      grad.addColorStop(0,col);grad.addColorStop(1,col+'99');
-      ctx.fillStyle=grad;
-      ctx.beginPath();ctx.moveTo(lpad,y+ROW_H/2-r);ctx.lineTo(lpad+barLen,y+ROW_H/2-r);ctx.quadraticCurveTo(lpad+barLen+r,y+ROW_H/2-r,lpad+barLen+r,y+ROW_H/2);ctx.quadraticCurveTo(lpad+barLen+r,y+ROW_H/2+r,lpad+barLen,y+ROW_H/2+r);ctx.lineTo(lpad,y+ROW_H/2+r);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2+r,lpad-r,y+ROW_H/2);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2-r,lpad,y+ROW_H/2-r);ctx.closePath();
-      ctx.fill();
-    }
-
-    // value
-    ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 12px sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
-    ctx.fillText(cnt,lpad+barLen+8,y+ROW_H/2);
-  });
+// ── SKU BARS ───────────────────────────────────────────────
+function renderSKUs(){
+  const map={};
+  F.forEach(r=>r.embalagens.split(',').forEach(e=>{const k=e.trim();if(k)map[k]=(map[k]||0)+1;}));
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const max=sorted[0]?.[1]||1;
+  document.getElementById('skulist').innerHTML=sorted.map(([sku,cnt],i)=>{
+    const bw=Math.round(cnt/max*100);
+    return `<div class="skurow">
+      <div class="skulabel" title="${sku}">${sku}</div>
+      <div class="skutrack"><div class="skufill" style="width:${bw}%;background:${VCOLS[i%VCOLS.length]}"></div></div>
+      <div class="skuval">${cnt}</div>
+    </div>`;
+  }).join('');
 }
 
-// ── EMPRESAS DO VENDEDOR ──────────────────────────────────────
-function renderEmpresasVendedor(){
+// ── EMPRESAS DO VENDEDOR ───────────────────────────────────
+function renderEmpresas(){
   const vend=document.getElementById('fvend').value;
   const panel=document.getElementById('emp-panel');
   const bgrid=document.getElementById('bgrid');
   if(!vend){panel.style.display='none';bgrid.classList.remove('has-emp');return;}
-
   panel.style.display='flex';
   bgrid.classList.add('has-emp');
-  document.getElementById('emp-panel-title').textContent=vend.split(' ')[0]+'\'s Empresas';
-
+  const first=vend.split(' ')[0];
+  document.getElementById('emp-title').textContent=`Empresas — ${first}`;
   const rows=RAW.filter(d=>d.vendedor===vend);
-  const body=document.getElementById('emp-panel-body');
-  if(!rows.length){body.innerHTML='<p style="padding:16px;color:var(--t2);font-size:12px">Nenhuma empresa encontrada.</p>';return;}
-
-  const SEG_COLORS_MAP={'Outros':'#3B82F6','Higiene Pessoal / Cosméticos':'#EC4899','Tintas / Massas / Químicos':'#F59E0B','Alimentos (não especificado)':'#10B981'};
-  body.innerHTML='<div class="emp-list">'+rows.map((r,i)=>{
+  document.getElementById('emplist').innerHTML=rows.map((r,i)=>{
     const initials=r.empresa.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const col=VCOLS[i%VCOLS.length];
-    const segCol=SEG_COLORS_MAP[r.segmento]||VCOLS[i%VCOLS.length];
-    const cidade=r.cidade||'—';
-    return `<div class="emp-item">
-      <div class="emp-av" style="background:${col}22;color:${col}">${initials}</div>
+    const segShort=r.segmento.split('/')[0].split('(')[0].trim();
+    return `<div class="emprow">
+      <div class="emp-av" style="background:${col}18;color:${col}">${initials}</div>
       <div class="emp-info">
         <div class="emp-name" title="${r.empresa}">${r.empresa}</div>
-        <div class="emp-city">${cidade} · ${r.estado.split(' - ')[1]||r.estado}</div>
+        <div class="emp-city">${r.cidade} · ${r.estado.split(' - ')[1]||r.estado}</div>
       </div>
-      <span class="emp-seg" style="background:${segCol}22;color:${segCol}">${r.segmento.split('/')[0].trim()}</span>
+      <span class="emp-seg" style="background:${col}18;color:${col}">${segShort}</span>
     </div>`;
-  }).join('')+'</div>';
+  }).join('');
 }
 
-// ── INSIGHTS ─────────────────────────────────────────────────
+// ── INSIGHTS ──────────────────────────────────────────────
 function renderInsights(){
-  const el=document.getElementById('insights');if(!el)return;
-  if(!F.length){el.innerHTML='<div class="insight"><div class="ins-dot" style="background:#EF4444"></div><div class="ins-txt">Nenhum dado para o filtro selecionado.</div></div>';return;}
-
+  const el=document.getElementById('insights');
+  if(!F.length){el.innerHTML='<div class="insight"><span class="ins-dot" style="background:#EF4444"></span><span class="ins-txt">Nenhum dado para o filtro selecionado.</span></div>';return;}
   const items=[];
-
-  // Top vendedor
   const vendMap={};F.forEach(d=>{vendMap[d.vendedor]=(vendMap[d.vendedor]||0)+1;});
-  const topVend=Object.entries(vendMap).sort((a,b)=>b[1]-a[1])[0];
-  if(topVend) items.push({col:'#3B82F6',txt:`<strong>${topVend[0]}</strong> lidera com <strong>${topVend[1]}</strong> solicitaç${topVend[1]>1?'ões':'ão'} — ${Math.round(topVend[1]/F.length*100)}% do total filtrado.`});
-
-  // Top estado
+  const topV=Object.entries(vendMap).sort((a,b)=>b[1]-a[1])[0];
+  if(topV)items.push({col:VCOLS[0],txt:`<strong>${topV[0]}</strong> lidera com <strong>${topV[1]}</strong> solicitaç${topV[1]>1?'ões':'ão'} — ${Math.round(topV[1]/F.length*100)}% do total.`});
   const estMap={};F.forEach(d=>{const e=d.estado.split(' - ')[0];estMap[e]=(estMap[e]||0)+1;});
-  const topEst=Object.entries(estMap).sort((a,b)=>b[1]-a[1])[0];
-  if(topEst) items.push({col:'#10B981',txt:`Estado com mais leads: <strong>${topEst[0]}</strong> com <strong>${topEst[1]}</strong> solicitaç${topEst[1]>1?'ões':'ão'}.`});
-
-  // Top embalagem
+  const topE=Object.entries(estMap).sort((a,b)=>b[1]-a[1])[0];
+  if(topE)items.push({col:VCOLS[1],txt:`Estado mais frequente: <strong>${topE[0]}</strong> com <strong>${topE[1]}</strong> solicitaç${topE[1]>1?'ões':'ão'}.`});
   const allEmb=F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()));
-  const embMap2={};allEmb.forEach(e=>{embMap2[e]=(embMap2[e]||0)+1;});
-  const topEmb=Object.entries(embMap2).sort((a,b)=>b[1]-a[1])[0];
-  if(topEmb) items.push({col:'#F59E0B',txt:`Embalagem mais solicitada: <strong>${topEmb[0]}</strong>, aparece em <strong>${topEmb[1]}</strong> pedido${topEmb[1]>1?'s':''}.`});
-
-  // Decoração
-  const lisa=F.filter(r=>r.decoracao==='Lisa').length;
-  const pctLisa=Math.round(lisa/F.length*100);
-  if(pctLisa<100) items.push({col:'#8B5CF6',txt:`<strong>${pctLisa}%</strong> das solicitações pedem embalagem lisa; <strong>${100-pctLisa}%</strong> com decoração especial.`});
-
-  el.innerHTML=items.map(i=>`<div class="insight"><div class="ins-dot" style="background:${i.col}"></div><div class="ins-txt">${i.txt}</div></div>`).join('');
+  const embMap={};allEmb.forEach(e=>{embMap[e]=(embMap[e]||0)+1;});
+  const topEmb=Object.entries(embMap).sort((a,b)=>b[1]-a[1])[0];
+  if(topEmb)items.push({col:VCOLS[2],txt:`SKU mais solicitado: <strong>${topEmb[0]}</strong>, em <strong>${topEmb[1]}</strong> pedido${topEmb[1]>1?'s':''}.`});
+  const lisaPct=Math.round(F.filter(r=>r.decoracao==='Lisa').length/F.length*100);
+  items.push({col:VCOLS[3],txt:`<strong>${lisaPct}%</strong> pedem embalagem lisa; <strong>${100-lisaPct}%</strong> com decoração especial.`});
+  el.innerHTML=items.map(i=>`<div class="insight"><span class="ins-dot" style="background:${i.col}"></span><span class="ins-txt">${i.txt}</span></div>`).join('');
 }
 
-// ── RENDER ALL ────────────────────────────────────────────────
-let rt;
-function renderAll(){renderKPIs();renderInsights();renderVendorTable();renderDonut();renderHBar();renderEmpresasVendedor();}
+// ── SIDEBAR ────────────────────────────────────────────────
+function renderSidebar(){
+  const emps=new Set(F.map(d=>d.cnpj)).size;
+  const vends=new Set(F.map(d=>d.vendedor)).size;
+  const cids=new Set(F.map(d=>d.cidade)).size;
+  const skus=new Set(F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()))).size;
+  const lisa=F.length?Math.round(F.filter(r=>r.decoracao==='Lisa').length/F.length*100):0;
+  animN(document.getElementById('sb0'),F.length,'');
+  animN(document.getElementById('sb1'),emps,'');
+  animN(document.getElementById('sb2'),vends,'');
+  animN(document.getElementById('sb3'),cids,'');
+  animN(document.getElementById('sb4'),skus,'');
+  animN(document.getElementById('sb5'),lisa,'%');
+}
 
-// ── INIT ─────────────────────────────────────────────────────
+// ── RENDER ALL ─────────────────────────────────────────────
+let rt;
+function renderAll(){renderSidebar();renderInsights();renderVendorList();renderDonut();renderSKUs();renderEmpresas();}
+
+// ── INIT ───────────────────────────────────────────────────
 function init(){
-  fillSel('fvend','vendedor');fillSel('fest','estado');fillSel('fseg','segmento');
+  fillSel('fvend','vendedor');fillSel('fest','estado');fillSel('fcid','cidade');
+  fillSel('fseg','segmento');fillSel('fdec','decoracao');
   window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderAll,160);});
   applyFilters();
   setTimeout(()=>{
     document.getElementById('loading').classList.add('out');
-    document.getElementById('app').style.display='flex';
-    setTimeout(()=>{document.getElementById('loading').remove();renderAll();},420);
-  },500);
+    document.getElementById('app').style.display='block';
+    setTimeout(()=>{document.getElementById('loading').remove();renderAll();},350);
+  },400);
 }
 document.addEventListener('DOMContentLoaded',init);
 </script>
