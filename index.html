@@ -5,20 +5,20 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0D1117;--sb:#111827;--c0:#1C2536;--c1:#243044;--c2:#2D3A50;
-  --brd:rgba(255,255,255,.07);--a:#F59E0B;--a2:#3B82F6;--a3:#10B981;
+  --bg:#F0F2F8;--sb:#FFFFFF;--c0:#FFFFFF;--c1:#F3F5FB;--c2:#E5E9F4;
+  --brd:rgba(0,0,0,.08);--a:#E8912D;--a2:#3B82F6;--a3:#10B981;
   --a4:#EF4444;--a5:#8B5CF6;--a6:#14B8A6;--a7:#F97316;
-  --t0:#F1F5F9;--t1:#94A3B8;--t2:#64748B;
+  --t0:#1E2A3A;--t1:#5A6A82;--t2:#94A3B8;
   --r:12px;--font:-apple-system,'Segoe UI',system-ui,sans-serif;
   --mono:'SF Mono','Consolas',monospace;
 }
-html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--font);font-size:14px}
+html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--font);font-size:14px;color-scheme:light}
 
 /* App shell */
 .app{display:flex;height:100vh;overflow:hidden}
 
 /* Sidebar */
-.sidebar{width:200px;flex-shrink:0;background:var(--sb);border-right:1px solid var(--brd);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar{width:200px;flex-shrink:0;background:var(--sb);border-right:1px solid var(--brd);box-shadow:2px 0 8px rgba(0,0,0,.06);display:flex;flex-direction:column;overflow-y:auto}
 .sb-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--brd)}
 .sb-hex{width:32px;height:32px;background:var(--a);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%);flex-shrink:0}
 .sb-name{font-size:16px;font-weight:800;letter-spacing:-.3px}
@@ -26,7 +26,7 @@ html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--fon
 nav{padding:12px 0;flex:1}
 .nav-g{padding:6px 14px 2px;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.9px}
 .ni{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;color:var(--t1);font-size:13px;transition:all .15s;border-left:3px solid transparent;user-select:none}
-.ni:hover{color:var(--t0);background:rgba(255,255,255,.04);border-left-color:rgba(245,158,11,.3)}
+.ni:hover{color:var(--t0);background:rgba(0,0,0,.04);border-left-color:rgba(232,145,45,.3)}
 .ni.act{color:var(--a);background:rgba(245,158,11,.08);border-left-color:var(--a);font-weight:600}
 .ni-ico{font-size:15px;width:18px;text-align:center;flex-shrink:0}
 .sb-foot{padding:14px;border-top:1px solid var(--brd)}
@@ -137,11 +137,11 @@ thead th:hover{color:var(--t0)}
 thead th.srt{color:var(--a)}
 tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s}
 tbody tr:last-child{border-bottom:0}
-tbody tr:hover{background:rgba(255,255,255,.025)}
+tbody tr:hover{background:rgba(0,0,0,.025)}
 td{padding:11px 16px;font-size:12.5px;vertical-align:middle}
 td.dim{color:var(--t1)}
 td.mono{font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--t1)}
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(255,255,255,.06);color:var(--t1);border:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(0,0,0,.05);color:var(--t1);border:1px solid rgba(0,0,0,.08);white-space:nowrap}
 .bb{background:rgba(59,130,246,.12);color:#60A5FA;border-color:rgba(59,130,246,.2)}
 .ba{background:rgba(245,158,11,.12);color:var(--a);border-color:rgba(245,158,11,.2)}
 .bg{background:rgba(16,185,129,.12);color:#34D399;border-color:rgba(16,185,129,.2)}
@@ -155,6 +155,16 @@ td.mono{font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nu
 .pbtn.cur{background:var(--a);border-color:var(--a);color:#000;font-weight:700}
 .empty{padding:40px;text-align:center;color:var(--t2);font-size:13px}
 
+/* Empresa list */
+.emp-row{display:grid;grid-template-columns:1fr auto;align-items:start;gap:10px;padding:13px 20px;border-bottom:1px solid var(--brd);transition:background .1s}
+.emp-row:last-child{border-bottom:0}
+.emp-row:hover{background:rgba(255,255,255,.03)}
+.emp-name{font-size:13px;font-weight:600;color:var(--t0);margin-bottom:3px}
+.emp-meta{display:flex;gap:10px;flex-wrap:wrap}
+.emp-meta span{font-size:11.5px;color:var(--t2)}
+.emp-meta span strong{color:var(--t1)}
+.emp-emb{font-size:11.5px;font-family:var(--mono);color:var(--a);background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);border-radius:5px;padding:2px 8px;white-space:nowrap}
+
 /* Loading */
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .4s}
 #loading.out{opacity:0;pointer-events:none}
@@ -163,7 +173,7 @@ td.mono{font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nu
 
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:3px}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .au{animation:fadeUp .35s ease both}
@@ -262,6 +272,17 @@ td.mono{font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nu
       </div>
     </div>
 
+    <!-- Empresas do Vendedor -->
+    <div class="cc" id="card-empresas" style="display:none">
+      <div class="cc-hdr">
+        <h3 id="emp-card-title">Empresas do Vendedor</h3>
+        <p id="emp-card-sub">Clientes atribuídos a este vendedor</p>
+      </div>
+      <div class="cc-body" style="padding:0">
+        <div id="emp-list"></div>
+      </div>
+    </div>
+
     <!-- Insights bar -->
     <div class="insights" id="insights-bar">
       <div class="ins-ico">⚡</div>
@@ -335,6 +356,7 @@ function fillSel(id,key){
 }
 function applyFilters(){
   const q=document.getElementById('fs').value.toLowerCase();
+  const emp=document.getElementById('femp').value;
   const vend=document.getElementById('fvend').value;
   const est=document.getElementById('fest').value;
   const cid=document.getElementById('fcid').value;
@@ -486,9 +508,9 @@ function renderDonut(){
     a+=sl+GAP;
   });
   ctx.beginPath();ctx.arc(cx,cy,ir,0,Math.PI*2);
-  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--c0').trim()||'#1C2536';
+  ctx.fillStyle='#FFFFFF';
   ctx.fill();
-  ctx.fillStyle='#F1F5F9';
+  ctx.fillStyle='#1E2A3A';
   ctx.font=`bold ${Math.round(or*.38)}px var(--mono)`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(total,cx,cy-or*.08);
@@ -585,6 +607,33 @@ function showTab(id){
   document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
 }
 
+// ── EMPRESAS DO VENDEDOR ──────────────────────────────────────
+function renderEmpresasVendedor(){
+  const vend=document.getElementById('fvend').value;
+  const card=document.getElementById('card-empresas');
+  const list=document.getElementById('emp-list');
+
+  if(!vend){card.style.display='none';return;}
+
+  card.style.display='';
+  document.getElementById('emp-card-title').textContent=`Empresas de ${vend}`;
+  document.getElementById('emp-card-sub').textContent=`${F.length} empresa${F.length!==1?'s':''} atribuída${F.length!==1?'s':''} a este vendedor`;
+
+  list.innerHTML=F.map(d=>`
+    <div class="emp-row">
+      <div>
+        <div class="emp-name">${d.empresa}</div>
+        <div class="emp-meta">
+          <span>📍 <strong>${d.cidade}</strong> · ${d.estado.split(' - ')[1]||d.estado}</span>
+          <span>🏭 <strong>${d.segmento}</strong></span>
+          <span>👤 ${d.nome}</span>
+        </div>
+      </div>
+      <span class="emp-emb">${d.embalagens}</span>
+    </div>
+  `).join('');
+}
+
 // ── RENDER ALL ────────────────────────────────────────────────
 let rt;
 function renderAll(){
@@ -593,6 +642,7 @@ function renderAll(){
   renderDonut();
   renderSKUs();
   renderInsights();
+  renderEmpresasVendedor();
   renderTable();
 }
 
