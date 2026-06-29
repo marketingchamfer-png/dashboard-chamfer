@@ -62,7 +62,8 @@ html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--fon
 .kc-spark{margin-top:auto;height:60px;width:100%}
 
 /* Bottom grid */
-.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
+.bgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;min-height:0}
+.bgrid.has-emp{grid-template-columns:1fr 1fr 1fr 1fr}
 
 /* Panel */
 .panel{background:var(--panel);border:1px solid var(--brd);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
@@ -87,6 +88,23 @@ html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--fon
 
 /* Grouped bar chart panel */
 .chart-area{flex:1;padding:12px 16px}
+
+/* Empresas card */
+.emp-list{display:flex;flex-direction:column;gap:4px;padding:8px 0}
+.emp-item{display:flex;align-items:center;gap:10px;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.04)}
+.emp-item:last-child{border-bottom:none}
+.emp-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff}
+.emp-info{flex:1;min-width:0}
+.emp-name{font-size:12px;font-weight:500;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.emp-city{font-size:10.5px;color:var(--t2)}
+.emp-seg{font-size:10px;padding:2px 7px;border-radius:4px;white-space:nowrap;font-weight:600}
+
+/* Insights strip */
+.insights{display:flex;gap:10px;flex-wrap:wrap}
+.insight{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--brd);flex:1;min-width:200px}
+.ins-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.ins-txt{font-size:12px;color:var(--t1);line-height:1.5}
+.ins-txt strong{color:var(--t0);font-weight:600}
 
 /* Loading */
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .4s}
@@ -166,13 +184,16 @@ html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--fon
       </div>
     </div>
 
+    <!-- Insights strip -->
+    <div class="insights au" id="insights" style="animation-delay:220ms"></div>
+
     <!-- Bottom panels -->
-    <div class="bgrid">
+    <div class="bgrid" id="bgrid">
 
       <!-- Vendedor table -->
       <div class="panel au" style="animation-delay:240ms">
         <div class="ph">
-          <div><h3>Solicitações por Vendedor</h3><p>Receita de leads por responsável</p></div>
+          <div><h3>Solicitações por Vendedor</h3><p>Leads por responsável</p></div>
         </div>
         <div class="pb">
           <table class="vtable">
@@ -187,12 +208,30 @@ html,body{height:100%;background:var(--bg);color:var(--t0);font-family:var(--fon
         </div>
       </div>
 
-      <!-- Grouped bar chart -->
-      <div class="panel au" style="animation-delay:320ms">
+      <!-- Segmento donut -->
+      <div class="panel au" style="animation-delay:300ms">
         <div class="ph">
-          <div><h3>Solicitações por Estado e Segmento</h3><p>Distribuição geográfica e setorial</p></div>
+          <div><h3>Segmentos de Atuação</h3><p>Distribuição por setor</p></div>
         </div>
-        <div class="chart-area"><canvas id="cgbar" style="width:100%;display:block"></canvas></div>
+        <div class="chart-area" style="display:flex;align-items:center;justify-content:center">
+          <canvas id="cdonut" style="display:block"></canvas>
+        </div>
+      </div>
+
+      <!-- Estado horizontal bars -->
+      <div class="panel au" style="animation-delay:360ms">
+        <div class="ph">
+          <div><h3>Solicitações por Estado</h3><p>Distribuição geográfica</p></div>
+        </div>
+        <div class="chart-area"><canvas id="chbar" style="width:100%;display:block"></canvas></div>
+      </div>
+
+      <!-- Empresas do vendedor (conditional) -->
+      <div class="panel au" id="emp-panel" style="animation-delay:420ms;display:none">
+        <div class="ph">
+          <div><h3 id="emp-panel-title">Empresas do Vendedor</h3><p>Clientes atribuídos</p></div>
+        </div>
+        <div class="pb" id="emp-panel-body"></div>
       </div>
 
     </div>
@@ -348,100 +387,171 @@ function renderVendorTable(){
   </tr>`;
 }
 
-// ── GROUPED BAR CHART ─────────────────────────────────────────
-function renderGroupedBar(){
-  const c=document.getElementById('cgbar');if(!c)return;
+// ── DONUT (Segmentos) ─────────────────────────────────────────
+function renderDonut(){
+  const c=document.getElementById('cdonut');if(!c)return;
   const dpr=window.devicePixelRatio||1;
   const container=c.parentElement;
-  const w=container.clientWidth-32;
-  const h=container.clientHeight-20||200;
+  const side=Math.min(container.clientWidth,container.clientHeight,220);
+  c.width=side*dpr;c.height=side*dpr;
+  c.style.width=side+'px';c.style.height=side+'px';
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,side,side);
+
+  const map={};F.forEach(d=>{map[d.segmento]=(map[d.segmento]||0)+1;});
+  const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Sem dados',side/2,side/2);return;}
+  const total=entries.reduce((s,[,v])=>s+v,0);
+  const cx=side/2,cy=side/2,R=side/2-12,ri=R*.55;
+  let angle=-Math.PI/2;
+  entries.forEach(([seg,cnt],i)=>{
+    const sweep=cnt/total*Math.PI*2;
+    const col=VCOLS[i%VCOLS.length];
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,angle,angle+sweep);ctx.closePath();
+    ctx.fillStyle=col;ctx.fill();
+    // label line for big slices
+    if(cnt/total>0.1){
+      const mid=angle+sweep/2;
+      const lx=cx+Math.cos(mid)*(R*.75);const ly=cy+Math.sin(mid)*(R*.75);
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(cnt,lx,ly);
+    }
+    angle+=sweep;
+  });
+  // hole
+  ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);ctx.fillStyle='#0D0D2B';ctx.fill();
+  // center text
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(total,cx,cy-7);
+  ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='10px sans-serif';
+  ctx.fillText('total',cx,cy+9);
+
+  // legend below (use DOM — rendered outside canvas)
+  let leg=c.parentElement.querySelector('.donut-leg');
+  if(!leg){leg=document.createElement('div');leg.className='donut-leg';leg.style.cssText='display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;margin-top:10px;max-width:'+side+'px';c.parentElement.appendChild(leg);}
+  leg.innerHTML=entries.map(([seg,cnt],i)=>{
+    const short=seg.length>18?seg.slice(0,18)+'…':seg;
+    return `<span style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:rgba(255,255,255,.6)"><span style="width:8px;height:8px;border-radius:2px;background:${VCOLS[i%VCOLS.length]};flex-shrink:0"></span>${short}</span>`;
+  }).join('');
+}
+
+// ── HORIZONTAL BAR CHART (Estados) ───────────────────────────
+function renderHBar(){
+  const c=document.getElementById('chbar');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const container=c.parentElement;
+  const w=container.clientWidth-24;
+
+  const map={};F.forEach(d=>{const e=d.estado.split(' - ')[0];map[e]=(map[e]||0)+1;});
+  const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){c.height=60*dpr;c.style.height='60px';const ctx=c.getContext('2d');ctx.scale(dpr,dpr);ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Sem dados',w/2,30);return;}
+
+  const ROW_H=36,lpad=90,rpad=50,tpad=8,bpad=8;
+  const h=tpad+entries.length*ROW_H+bpad;
   c.width=w*dpr;c.height=h*dpr;
   c.style.width=w+'px';c.style.height=h+'px';
   const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,w,h);
 
-  // Build data: estados x segmentos
-  const estados=[...new Set(F.map(d=>d.estado.split(' - ')[1]||d.estado))];
-  const segs=[...new Set(F.map(d=>d.segmento))].slice(0,4);
-  const SEG_COLORS=['#3B82F6','#10B981','#F59E0B','#8B5CF6'];
+  const maxVal=entries[0][1];
+  const bw=w-lpad-rpad;
 
-  if(!estados.length){
-    ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='13px var(--font)';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('Sem dados',w/2,h/2);return;
-  }
+  entries.forEach(([est,cnt],i)=>{
+    const y=tpad+i*ROW_H;
+    const col=VCOLS[i%VCOLS.length];
+    const barLen=cnt/maxVal*bw;
 
-  const lpad=50,rpad=30,tpad=30,bpad=40;
-  const cw=w-lpad-rpad,ch=h-tpad-bpad;
-  const maxVal=estados.reduce((mx,est)=>{
-    const total=F.filter(d=>(d.estado.split(' - ')[1]||d.estado)===est).length;
-    return Math.max(mx,total);
-  },0)*1.2||1;
+    // label
+    ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='11.5px sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillText(est,lpad-8,y+ROW_H/2);
 
-  const barGroupW=cw/estados.length;
-  const barW=Math.min(28,barGroupW/segs.length*.8);
+    // track
+    ctx.fillStyle='rgba(255,255,255,.07)';
+    const r=5;
+    ctx.beginPath();ctx.moveTo(lpad,y+ROW_H/2-r);ctx.lineTo(lpad+bw,y+ROW_H/2-r);ctx.quadraticCurveTo(lpad+bw+r,y+ROW_H/2-r,lpad+bw+r,y+ROW_H/2);ctx.quadraticCurveTo(lpad+bw+r,y+ROW_H/2+r,lpad+bw,y+ROW_H/2+r);ctx.lineTo(lpad,y+ROW_H/2+r);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2+r,lpad-r,y+ROW_H/2);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2-r,lpad,y+ROW_H/2-r);ctx.closePath();
+    ctx.fill();
 
-  // Grid
-  for(let i=0;i<=4;i++){
-    const y=tpad+ch-(ch/4*i);
-    ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(lpad,y);ctx.lineTo(lpad+cw,y);ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='10px var(--font)';ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillText(Math.round(maxVal/4*i),lpad-6,y);
-  }
-
-  // Bars
-  estados.forEach((est,ei)=>{
-    const gx=lpad+barGroupW*ei+barGroupW/2;
-    const rows=F.filter(d=>(d.estado.split(' - ')[1]||d.estado)===est);
-    const total=rows.length;
-    const segCounts=segs.map(s=>rows.filter(d=>d.segmento===s).length);
-    const otherCount=rows.filter(d=>!segs.includes(d.segmento)).length;
-    const allCounts=[...segCounts,otherCount].filter(v=>v>0);
-    const allColors=[...SEG_COLORS,VCOLS[4]].filter((_,i)=>[...segCounts,otherCount][i]>0);
-    const nBars=allCounts.length;
-    const totalW=nBars*barW+(nBars-1)*3;
-    let bx=gx-totalW/2;
-
-    allCounts.forEach((cnt,bi)=>{
-      if(!cnt)return;
-      const bh=(cnt/maxVal)*ch;
-      const by=tpad+ch-bh;
-      const col=allColors[bi];
-      const grad=ctx.createLinearGradient(0,by,0,by+bh);
-      grad.addColorStop(0,col);grad.addColorStop(1,col+'88');
+    // bar
+    if(barLen>0){
+      const grad=ctx.createLinearGradient(lpad,0,lpad+barLen,0);
+      grad.addColorStop(0,col);grad.addColorStop(1,col+'99');
       ctx.fillStyle=grad;
-      const r=Math.min(4,barW/2);
-      ctx.beginPath();ctx.moveTo(bx,by+bh);ctx.lineTo(bx,by+r);
-      ctx.quadraticCurveTo(bx,by,bx+r,by);ctx.lineTo(bx+barW-r,by);
-      ctx.quadraticCurveTo(bx+barW,by,bx+barW,by+r);ctx.lineTo(bx+barW,by+bh);ctx.closePath();
+      ctx.beginPath();ctx.moveTo(lpad,y+ROW_H/2-r);ctx.lineTo(lpad+barLen,y+ROW_H/2-r);ctx.quadraticCurveTo(lpad+barLen+r,y+ROW_H/2-r,lpad+barLen+r,y+ROW_H/2);ctx.quadraticCurveTo(lpad+barLen+r,y+ROW_H/2+r,lpad+barLen,y+ROW_H/2+r);ctx.lineTo(lpad,y+ROW_H/2+r);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2+r,lpad-r,y+ROW_H/2);ctx.quadraticCurveTo(lpad-r,y+ROW_H/2-r,lpad,y+ROW_H/2-r);ctx.closePath();
       ctx.fill();
-      bx+=barW+3;
-    });
+    }
 
-    // value label
-    ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 12px var(--font)';ctx.textAlign='center';ctx.textBaseline='bottom';
-    const topY=tpad+ch-(total/maxVal)*ch;
-    ctx.fillText(total,gx,topY-4);
-
-    // x label
-    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='11px var(--font)';ctx.textBaseline='top';
-    ctx.fillText(est,gx,tpad+ch+6);
+    // value
+    ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 12px sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+    ctx.fillText(cnt,lpad+barLen+8,y+ROW_H/2);
   });
+}
 
-  // Legend
-  let lx=lpad;
-  segs.slice(0,4).forEach((s,i)=>{
-    const short=s.length>14?s.slice(0,14)+'…':s;
-    ctx.fillStyle=SEG_COLORS[i];ctx.beginPath();ctx.arc(lx+5,tpad-12,5,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='10.5px var(--font)';ctx.textAlign='left';ctx.textBaseline='middle';
-    ctx.fillText(short,lx+14,tpad-12);
-    lx+=ctx.measureText(short).width+28;
-  });
+// ── EMPRESAS DO VENDEDOR ──────────────────────────────────────
+function renderEmpresasVendedor(){
+  const vend=document.getElementById('fvend').value;
+  const panel=document.getElementById('emp-panel');
+  const bgrid=document.getElementById('bgrid');
+  if(!vend){panel.style.display='none';bgrid.classList.remove('has-emp');return;}
+
+  panel.style.display='flex';
+  bgrid.classList.add('has-emp');
+  document.getElementById('emp-panel-title').textContent=vend.split(' ')[0]+'\'s Empresas';
+
+  const rows=RAW.filter(d=>d.vendedor===vend);
+  const body=document.getElementById('emp-panel-body');
+  if(!rows.length){body.innerHTML='<p style="padding:16px;color:var(--t2);font-size:12px">Nenhuma empresa encontrada.</p>';return;}
+
+  const SEG_COLORS_MAP={'Outros':'#3B82F6','Higiene Pessoal / Cosméticos':'#EC4899','Tintas / Massas / Químicos':'#F59E0B','Alimentos (não especificado)':'#10B981'};
+  body.innerHTML='<div class="emp-list">'+rows.map((r,i)=>{
+    const initials=r.empresa.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const col=VCOLS[i%VCOLS.length];
+    const segCol=SEG_COLORS_MAP[r.segmento]||VCOLS[i%VCOLS.length];
+    const cidade=r.cidade||'—';
+    return `<div class="emp-item">
+      <div class="emp-av" style="background:${col}22;color:${col}">${initials}</div>
+      <div class="emp-info">
+        <div class="emp-name" title="${r.empresa}">${r.empresa}</div>
+        <div class="emp-city">${cidade} · ${r.estado.split(' - ')[1]||r.estado}</div>
+      </div>
+      <span class="emp-seg" style="background:${segCol}22;color:${segCol}">${r.segmento.split('/')[0].trim()}</span>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ── INSIGHTS ─────────────────────────────────────────────────
+function renderInsights(){
+  const el=document.getElementById('insights');if(!el)return;
+  if(!F.length){el.innerHTML='<div class="insight"><div class="ins-dot" style="background:#EF4444"></div><div class="ins-txt">Nenhum dado para o filtro selecionado.</div></div>';return;}
+
+  const items=[];
+
+  // Top vendedor
+  const vendMap={};F.forEach(d=>{vendMap[d.vendedor]=(vendMap[d.vendedor]||0)+1;});
+  const topVend=Object.entries(vendMap).sort((a,b)=>b[1]-a[1])[0];
+  if(topVend) items.push({col:'#3B82F6',txt:`<strong>${topVend[0]}</strong> lidera com <strong>${topVend[1]}</strong> solicitaç${topVend[1]>1?'ões':'ão'} — ${Math.round(topVend[1]/F.length*100)}% do total filtrado.`});
+
+  // Top estado
+  const estMap={};F.forEach(d=>{const e=d.estado.split(' - ')[0];estMap[e]=(estMap[e]||0)+1;});
+  const topEst=Object.entries(estMap).sort((a,b)=>b[1]-a[1])[0];
+  if(topEst) items.push({col:'#10B981',txt:`Estado com mais leads: <strong>${topEst[0]}</strong> com <strong>${topEst[1]}</strong> solicitaç${topEst[1]>1?'ões':'ão'}.`});
+
+  // Top embalagem
+  const allEmb=F.flatMap(r=>r.embalagens.split(',').map(e=>e.trim()));
+  const embMap2={};allEmb.forEach(e=>{embMap2[e]=(embMap2[e]||0)+1;});
+  const topEmb=Object.entries(embMap2).sort((a,b)=>b[1]-a[1])[0];
+  if(topEmb) items.push({col:'#F59E0B',txt:`Embalagem mais solicitada: <strong>${topEmb[0]}</strong>, aparece em <strong>${topEmb[1]}</strong> pedido${topEmb[1]>1?'s':''}.`});
+
+  // Decoração
+  const lisa=F.filter(r=>r.decoracao==='Lisa').length;
+  const pctLisa=Math.round(lisa/F.length*100);
+  if(pctLisa<100) items.push({col:'#8B5CF6',txt:`<strong>${pctLisa}%</strong> das solicitações pedem embalagem lisa; <strong>${100-pctLisa}%</strong> com decoração especial.`});
+
+  el.innerHTML=items.map(i=>`<div class="insight"><div class="ins-dot" style="background:${i.col}"></div><div class="ins-txt">${i.txt}</div></div>`).join('');
 }
 
 // ── RENDER ALL ────────────────────────────────────────────────
 let rt;
-function renderAll(){renderKPIs();renderVendorTable();renderGroupedBar();}
+function renderAll(){renderKPIs();renderInsights();renderVendorTable();renderDonut();renderHBar();renderEmpresasVendedor();}
 
 // ── INIT ─────────────────────────────────────────────────────
 function init(){
